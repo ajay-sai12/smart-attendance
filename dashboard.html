@@ -1,0 +1,123 @@
+{% extends "base.html" %} {% block content %}
+
+<h2 class="mb-4 text-capitalize">{{ role }} Dashboard</h2>
+
+{% if role == "admin" %}
+<div class="card shadow">
+  <div class="card-body">
+    <h4>All Users</h4>
+    <table class="table table-striped mt-3">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td>{{ user.username }}</td>
+          <td><span class="badge bg-primary">{{ user.role }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %} {% if role == "teacher" %}
+<div class="card shadow">
+  <div class="card-body">
+    <h4>Students</h4>
+    {% for student in students %}
+    <div class="border rounded p-3 mb-3">
+      <h5>{{ student.username }}</h5>
+      <form action="/mark/{{ student._id }}" method="POST" class="row g-2 mt-2">
+        <div class="col-md-4">
+          <input type="date" name="date" class="form-control" required />
+        </div>
+        <div class="col-md-4">
+          <select name="status" class="form-select">
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <button class="btn btn-success w-100">Mark Attendance</button>
+        </div>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %} {% if role == "student" %}
+
+<div class="row mb-4">
+  <div class="col-md-4">
+    <div class="card shadow text-center p-3">
+      <h6>Total Classes</h6>
+      <h3>{{ total }}</h3>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow text-center p-3">
+      <h6>Present</h6>
+      <h3 class="text-success">{{ present }}</h3>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow text-center p-3">
+      <h6>Absent</h6>
+      <h3 class="text-danger">{{ absent }}</h3>
+    </div>
+  </div>
+</div>
+
+<div class="card shadow mb-4">
+  <div class="card-body">
+    <h5>Attendance Percentage</h5>
+    <div class="progress mt-3" style="height: 25px">
+      <div
+        class="progress-bar {% if percentage >= 75 %} bg-success {% elif percentage >= 50 %} bg-warning {% else %} bg-danger {% endif %}"
+        role="progressbar"
+        style="width: {{ percentage }}%;"
+      >
+        {{ percentage }}%
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card shadow">
+  <div class="card-body">
+    <h4>Your Attendance</h4>
+
+    {% if records|length == 0 %}
+    <div class="alert alert-info mt-3">No attendance records yet.</div>
+    {% else %}
+    <table class="table table-bordered mt-3">
+      <thead class="table-dark">
+        <tr>
+          <th>Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for record in records %}
+        <tr>
+          <td>{{ record.date }}</td>
+          <td>
+            {% if record.status == "Present" %}
+            <span class="badge bg-success">Present</span>
+            {% else %}
+            <span class="badge bg-danger">Absent</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
+</div>
+
+{% endif %} {% endblock %}
