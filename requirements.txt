@@ -1,0 +1,8 @@
+Flask
+flask-cors
+flask-pymongo
+flask-jwt-extended
+bcrypt
+qrcode
+pillow
+pytest
